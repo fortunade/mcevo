@@ -16,7 +16,7 @@ bound = 8
 z_spacing = 2
 x_spacing = 2
 
-blocklist =[]
+
 open('blocklist.json', 'w').close()
 
 class MCProblem(IntegerProblem):
@@ -35,8 +35,11 @@ class MCProblem(IntegerProblem):
         self.x_displacement = 0
         self.z_displacement = 0
         self.next_generation = population
+        self.blocklist =[]
+        self.generation_count=0
+        self.full_list={}
 
-        self.clear_cube()
+##        self.clear_cube()
 
 
     def evaluate(self, solution):
@@ -50,6 +53,18 @@ class MCProblem(IntegerProblem):
             self.z_displacement += bound+z_spacing
             self.next_generation = population
             self.x_displacement=0
+            
+            self.full_list.update({self.generation_count:self.blocklist})
+            blocklist_json = open('blocklist.json', mode='w')
+            json.dump(self.full_list, blocklist_json)
+            blocklist_json.close()
+            
+            last_generation_json = open('last_generation.json', mode='w')
+            json.dump({self.generation_count:self.blocklist}, last_generation_json)
+            last_generation_json.close()
+            
+            self.generation_count +=1
+            self.blocklist=[]
 
         ys = []
         uni_count=[]
@@ -92,10 +107,10 @@ class MCProblem(IntegerProblem):
         #blocklist.append((generation_blocklist))
         #blocklist_json.write(json.dumps(blocklist))
         #blocklist_json.write(json.dumps(generation_blocklist))
-        blocklist_json = open('blocklist.json', mode='w')
-        json.dump({"blocks":generation_blocklist,"solution objectives": solution.objectives}, blocklist_json)
-        blocklist_json.close()
-        
+##        blocklist_json = open('blocklist.json', mode='w')
+##        json.dump({self.next_generation:{"blocks":generation_blocklist,"solution objectives": solution.objectives}}, blocklist_json)
+##        blocklist_json.close()
+        self.blocklist.append({"blocks":generation_blocklist,"solution objectives": solution.objectives})
         self.x_displacement += (bound + x_spacing)
         
         self.next_generation -= 1

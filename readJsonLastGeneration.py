@@ -29,19 +29,21 @@ client.fillCube(FillCubeRequest(  #clear set area
 ))
 
 
-blocklist_json = open('blocklist.json', mode='r')
+blocklist_json = open('last_generation.json', mode='r')
 jsonRead= blocklist_json.read()
 blocklist=json.loads(jsonRead)
 
+
 blocks = []
-for k in range (len(blocklist)):
-    for j in range(len(blocklist[k])):                
-        for i in range(len(blocklist[k][j]['blocks'])):
-    ##        print(blocklist['3'][j]['blocks'][i])
-        ##    info = {'x': 1, 'y': 4, 'z': 10, 'btype': 68}
-            info = blocklist[k][j]['blocks'][i]
-            mcblock = MCBlock(info['x'], info['y'], info['z'], info['btype'])
-            blocks.append(mcblock.create_block())
+k =(max(blocklist))
+for j in range(len(blocklist[k])):                
+    for i in range(len(blocklist[k][j]['blocks'])):
+##        print(blocklist[k][j]['blocks'][i])
+        print('====')
+    ##    info = {'x': 1, 'y': 4, 'z': 10, 'btype': 68}
+        info = blocklist[k][j]['blocks'][i]
+        mcblock = MCBlock(info['x'], info['y'], info['z'], info['btype'])
+        blocks.append(mcblock.create_block())
 
 client.spawnBlocks(Blocks(blocks=blocks)) #spawns every solution
         
