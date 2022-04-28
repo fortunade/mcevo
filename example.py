@@ -1,5 +1,6 @@
 import grpc
 import time
+import csv
 
 from jmetal.algorithm.multiobjective.nsgaii import NSGAII
 from jmetal.core.problem import IntegerProblem
@@ -14,6 +15,7 @@ population = 40
 bound = 8
 z_spacing = 2
 x_spacing = 2
+
 
 class MCProblem(IntegerProblem):
     def __init__(self):
@@ -56,16 +58,17 @@ class MCProblem(IntegerProblem):
             #btype = 68 
             btype = [68,198,91,58]
             #emerald block, sea lantern, gold block, diamond block.
-            mcblock = MCBlock(x, y, z, btype)
+            mcblock = MCBlock(x, y, z, btype[y%4])
 
-            #blocks.append(mcblock.create_block())
-            blocks.append(Block(position=Point(x=x,y=y,z=z),type=btype[y%4],orientation=NORTH))
+            blocks.append(mcblock.create_block())
+            #blocks.append(Block(position=Point(x=x,y=y,z=z),type=btype[y%4],orientation=NORTH))
             ys.append(y)
             uni_count.append((x,y,z))
         print(blocks)
         print("=====")
 
-        self.client.spawnBlocks(Blocks(blocks=blocks))
+        self.client.spawnBlocks(Blocks(blocks=blocks)) #spawns every solution
+        
         solution.objectives[0] = sum(ys)#/len(ys)
 ##        solution.objectives[1] = 1/len(set(uni_count))
 ##        solution.objectives[0] = 0.3*self.objective_normalize(4,4+bound,sum(ys))+ 3*self.objective_normalize(0,self.number_of_variables/3,1/len(set(uni_count)))
